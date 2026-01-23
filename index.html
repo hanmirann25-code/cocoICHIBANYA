@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- 기본 메타 태그 (페이지별로 덮어쓰기 됨) -->
+    <title>코코이찌방야 - 세계 No.1 카레 전문점</title>
+    <meta name="description" content="세계 No.1 카레 전문점 코코이찌방야. 나만의 카레를 만들어보세요." />
+    
+    <!-- 프리로드 폰트 (성능 최적화) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- 구조화된 데이터 (JSON-LD) - 비즈니스 정보 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "코코이찌방야",
+      "image": "https://cocoichibanya.co.kr/images/logo.png",
+      "description": "세계 No.1 카레 전문점",
+      "servesCuisine": "일본 카레",
+      "priceRange": "₩₩",
+      "telephone": "1588-0000",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "KR",
+        "addressRegion": "서울",
+        "addressLocality": "서울"
+      },
+      "url": "https://cocoichibanya.co.kr",
+      "sameAs": [
+        "https://www.facebook.com/cocoichibanya",
+        "https://www.instagram.com/cocoichibanya"
+      ]
+    }
+    </script>
+    
+    <!-- Google Analytics (실제 서비스 시 추가) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script> -->
+    
+    <!-- Naver Analytics (실제 서비스 시 추가) -->
+    <!-- <script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script> -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
