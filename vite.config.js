@@ -5,6 +5,5 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   // GitHub Pages 배포를 위한 base URL 설정
-  // 저장소 이름으로 변경하세요! 예: base: '/cocoICHIBANYA/'
-  base: '/your-repository-name/',
+  base: '/cocoICHIBANYA/',
 })
