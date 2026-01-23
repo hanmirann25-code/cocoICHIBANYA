@@ -5,7 +5,7 @@
  * React Router를 사용한 전체 페이지 라우팅 관리
  */
 
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import MainPage from './pages/MainPage';
