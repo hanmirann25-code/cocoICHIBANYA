@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   // GitHub Pages 배포를 위한 base URL 설정
-  base: '/cocoICHIBANYA/',
+  base: './',
   build: {
     // 상대 경로로 빌드
     assetsInlineLimit: 0,
