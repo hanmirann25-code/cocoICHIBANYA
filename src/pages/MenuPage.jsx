@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaSearch, FaFilter } from 'react-icons/fa';
 import Card, { CardImage, CardContent, CardTitle, CardDescription, CardPrice } from '../components/common/Card';
+import { getImagePath } from '../utils/imagePath';
 import Button from '../components/common/Button';
 import SEO from '../components/common/SEO';
 import menuService, { initializeMenus } from '../services/menuService';
@@ -173,7 +174,7 @@ const MenuPage = () => {
                 >
                   <Card hover>
                     <CardImage>
-                      <MenuImage src={menu.image} alt={menu.name} />
+                      <MenuImage src={getImagePath(menu.image)} alt={menu.name} />
                       {menu.popular && <PopularBadge>BEST</PopularBadge>}
                       <MenuBadges>
                         {menu.calories && (
@@ -239,7 +240,7 @@ const MenuPage = () => {
                   transition={{ delay: index * 0.05 }}
                 >
                   <ToppingCard>
-                    <ToppingImage src={topping.image} alt={topping.name} />
+                    <ToppingImage src={getImagePath(topping.image)} alt={topping.name} />
                     <ToppingInfo>
                       <ToppingName>{topping.name}</ToppingName>
                       <ToppingDesc>{topping.description}</ToppingDesc>
@@ -269,7 +270,7 @@ const MenuPage = () => {
                 >
                   <Card hover>
                     <CardImage>
-                      <MenuImage src={side.image} alt={side.name} />
+                      <MenuImage src={getImagePath(side.image)} alt={side.name} />
                     </CardImage>
                     <CardContent>
                       <CardTitle>{side.name}</CardTitle>
@@ -300,7 +301,7 @@ const MenuPage = () => {
                 >
                   <Card hover>
                     <CardImage>
-                      <MenuImage src={drink.image} alt={drink.name} />
+                      <MenuImage src={getImagePath(drink.image)} alt={drink.name} />
                     </CardImage>
                     <CardContent>
                       <CardTitle>{drink.name}</CardTitle>
@@ -330,7 +331,7 @@ const MenuPageWrapper = styled.div`
 const PageHeader = styled.div`
   position: relative;
   height: 300px;
-  background: url('/images/menu-header.jpg') center/cover;
+  background: url('${getImagePath('/images/menu-header.jpg')}') center/cover;
   display: flex;
   align-items: center;
   justify-content: center;

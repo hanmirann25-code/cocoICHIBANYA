@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import { FaMapMarkerAlt, FaPhone, FaClock, FaSearch, FaParking, FaTruck, FaBox } from 'react-icons/fa';
 import Button from '../components/common/Button';
 import SEO from '../components/common/SEO';
+import { getImagePath } from '../utils/imagePath';
 import StoreMap from '../components/common/StoreMap';
 import storeService, { initializeStores } from '../services/storeService';
 
@@ -227,7 +228,7 @@ const StorePageWrapper = styled.div`
 const PageHeader = styled.div`
   position: relative;
   height: 300px;
-  background: url('/images/store-header.jpg') center/cover;
+  background: url('${getImagePath('/images/store-header.jpg')}') center/cover;
   display: flex;
   align-items: center;
   justify-content: center;

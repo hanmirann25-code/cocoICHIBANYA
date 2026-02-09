@@ -6,12 +6,13 @@
  */
 
 import { Helmet } from 'react-helmet-async';
+import { getImagePath } from '../../utils/imagePath';
 
 const SEO = ({ 
   title = '코코이찌방야',
   description = '세계 No.1 카레 전문점 코코이찌방야. 나만의 카레를 만들어보세요.',
   keywords = '코코이찌방야, 카레, 일본카레, 돈까스카레, 맛집, CoCo ICHIBANYA',
-  image = '/images/og-image.jpg',
+  image = getImagePath('/images/og-image.jpg'),
   url = 'https://cocoichibanya.co.kr',
   type = 'website'
 }) => {

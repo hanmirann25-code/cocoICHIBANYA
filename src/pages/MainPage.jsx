@@ -5,18 +5,20 @@
  * 풀스크린 히어로, 베스트 메뉴, 특징, CTA 섹션 포함
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaUtensils, FaMapMarkerAlt, FaFire, FaLeaf, FaAward, FaHeart } from 'react-icons/fa';
 import Button from '../components/common/Button';
+import { getImagePath } from '../utils/imagePath';
 import Card, { CardImage, CardContent, CardTitle, CardDescription, CardPrice } from '../components/common/Card';
 import SEO from '../components/common/SEO';
-import { bestMenus } from '../data/menuData';
+import menuService from '../services/menuService';
 
 const MainPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [popularMenus, setPopularMenus] = useState([]);
 
   const heroSlides = [
     {
@@ -44,6 +46,22 @@ const MainPage = () => {
       link: '/store'
     }
   ];
+
+  // Firebase에서 인기 메뉴 가져오기
+  useEffect(() => {
+    const loadPopularMenus = async () => {
+      try {
+        const allMenus = await menuService.getAllCurryMenus();
+        // popular: true인 메뉴만 필터링
+        const popular = allMenus.filter(menu => menu.popular === true);
+        setPopularMenus(popular);
+      } catch (error) {
+        console.error('인기 메뉴 로드 실패:', error);
+      }
+    };
+
+    loadPopularMenus();
+  }, []);
 
   const features = [
     {
@@ -91,9 +109,9 @@ const MainPage = () => {
               playsInline
               $active={currentSlide === index}
             >
-              <source src={slide.video} type="video/mp4" />
+              <source src={getImagePath(slide.video)} type="video/mp4" />
             </HeroVideo>
-            
+
             <HeroOverlay />
             <HeroContent
               as={motion.div}
@@ -164,27 +182,31 @@ const MainPage = () => {
           </SectionHeader>
 
           <MenuGrid>
-            {bestMenus.slice(0, 4).map((menu, index) => (
-              <motion.div
-                key={menu.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card hover>
-                  <CardImage>
-                    <MenuImage src={menu.image} alt={menu.name} />
-                    {menu.popular && <PopularBadge>BEST</PopularBadge>}
-                  </CardImage>
-                  <CardContent>
-                    <CardTitle>{menu.name}</CardTitle>
-                    <CardDescription>{menu.description}</CardDescription>
-                    <CardPrice>{menu.price.toLocaleString()}원</CardPrice>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            {popularMenus.length > 0 ? (
+              popularMenus.slice(0, 4).map((menu, index) => (
+                <motion.div
+                  key={menu.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card hover>
+                    <CardImage>
+                      <MenuImage src={getImagePath(menu.image)} alt={menu.name} />
+                      {menu.popular && <PopularBadge>BEST</PopularBadge>}
+                    </CardImage>
+                    <CardContent>
+                      <CardTitle>{menu.name}</CardTitle>
+                      <CardDescription>{menu.description}</CardDescription>
+                      <CardPrice>{menu.price.toLocaleString()}원</CardPrice>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            ) : (
+              <LoadingMessage>인기 메뉴를 불러오는 중...</LoadingMessage>
+            )}
           </MenuGrid>
 
           <ViewAllButton>
@@ -223,7 +245,7 @@ const MainPage = () => {
           </CTAContent>
         </Container>
       </CTASection>
-    </MainWrapper>
+    </MainWrapper >
   );
 };
 
@@ -263,6 +285,59 @@ const HeroVideo = styled.video`
   object-position: center;
   opacity: ${props => props.$active ? 1 : 0};
   transition: opacity 1s ease;
+`;
+
+const HeroImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: ${props => props.$active ? 1 : 0};
+  transition: opacity 1s ease;
+`;
+
+const HeroYoutube = styled.iframe`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  opacity: ${props => props.$active ? 1 : 0};
+  transition: opacity 1s ease;
+  pointer-events: ${props => props.$active ? 'auto' : 'none'};
+`;
+
+const LoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary), #ff6b35);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+`;
+
+const EmptyOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-light-gray);
+  color: var(--color-gray);
+  font-size: 1.25rem;
 `;
 
 const HeroOverlay = styled.div`
@@ -466,7 +541,7 @@ const ViewAllButton = styled.div`
 const CTASection = styled.section`
   position: relative;
   padding: 8rem 0;
-  background: url('/images/cta-bg.jpg') center/cover;
+  background: url('${getImagePath('/images/cta-bg.jpg')}') center/cover;
   color: var(--color-white);
 `;
 
@@ -508,6 +583,14 @@ const CTAButtons = styled.div`
   a {
     text-decoration: none;
   }
+`;
+
+const LoadingMessage = styled.div`
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  font-size: 1.125rem;
+  color: var(--color-gray);
 `;
 
 export default MainPage;

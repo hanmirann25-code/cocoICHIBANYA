@@ -5,6 +5,8 @@
  * 전국 매장 정보를 관리합니다.
  */
 
+import { getImagePath } from '../utils/imagePath';
+
 export const stores = [
   {
     id: 'gangnam',
@@ -15,7 +17,7 @@ export const stores = [
     lat: 37.4979,
     lng: 127.0276,
     features: ['주차가능', '배달가능', '포장가능', '단체석'],
-    images: ['/images/stores/gangnam-1.jpg', '/images/stores/gangnam-2.jpg']
+    images: [getImagePath('/images/stores/gangnam-1.jpg'), getImagePath('/images/stores/gangnam-2.jpg')]
   },
   {
     id: 'hongdae',
@@ -26,7 +28,7 @@ export const stores = [
     lat: 37.5563,
     lng: 126.9245,
     features: ['배달가능', '포장가능', '24시간'],
-    images: ['/images/stores/hongdae-1.jpg']
+    images: [getImagePath('/images/stores/hongdae-1.jpg')]
   },
   {
     id: 'jamsil',
@@ -37,7 +39,7 @@ export const stores = [
     lat: 37.5133,
     lng: 127.1028,
     features: ['주차가능', '배달가능', '포장가능', '키즈존'],
-    images: ['/images/stores/jamsil-1.jpg']
+    images: [getImagePath('/images/stores/jamsil-1.jpg')]
   },
   {
     id: 'myeongdong',
@@ -48,7 +50,7 @@ export const stores = [
     lat: 37.5636,
     lng: 126.9844,
     features: ['포장가능', '외국어가능'],
-    images: ['/images/stores/myeongdong-1.jpg']
+    images: [getImagePath('/images/stores/myeongdong-1.jpg')]
   },
   {
     id: 'sinchon',
@@ -59,7 +61,7 @@ export const stores = [
     lat: 37.5559,
     lng: 126.9366,
     features: ['배달가능', '포장가능', '학생할인'],
-    images: ['/images/stores/sinchon-1.jpg']
+    images: [getImagePath('/images/stores/sinchon-1.jpg')]
   },
   {
     id: 'busan-seomyeon',
@@ -70,7 +72,7 @@ export const stores = [
     lat: 35.1580,
     lng: 129.0599,
     features: ['주차가능', '배달가능', '포장가능'],
-    images: ['/images/stores/busan-1.jpg']
+    images: [getImagePath('/images/stores/busan-1.jpg')]
   },
   {
     id: 'daegu',
@@ -81,7 +83,7 @@ export const stores = [
     lat: 35.8714,
     lng: 128.6014,
     features: ['포장가능', '배달가능'],
-    images: ['/images/stores/daegu-1.jpg']
+    images: [getImagePath('/images/stores/daegu-1.jpg')]
   },
   {
     id: 'incheon',
@@ -92,7 +94,7 @@ export const stores = [
     lat: 37.4563,
     lng: 126.7052,
     features: ['주차가능', '배달가능', '포장가능'],
-    images: ['/images/stores/incheon-1.jpg']
+    images: [getImagePath('/images/stores/incheon-1.jpg')]
   }
 ];
 

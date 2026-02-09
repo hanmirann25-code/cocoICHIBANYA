@@ -20,6 +20,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminNoticePage from './pages/AdminNoticePage';
 import AdminStorePage from './pages/AdminStorePage';
 import AdminMenuPage from './pages/AdminMenuPage';
+import AdminConsultationPage from './pages/AdminConsultationPage';
+import AdminHeroVisualPage from './pages/AdminHeroVisualPage';
 import ScrollToTop from './components/common/ScrollToTop';
 import './index.css';
 
@@ -34,36 +36,38 @@ function AppContent() {
 
       {/* 페이지 라우팅 */}
       <Routes>
-          {/* 메인 페이지 */}
-          <Route path="/" element={<MainPage />} />
+        {/* 메인 페이지 */}
+        <Route path="/" element={<MainPage />} />
 
-          {/* 메뉴 페이지 */}
-          <Route path="/menu" element={<MenuPage />} />
+        {/* 메뉴 페이지 */}
+        <Route path="/menu" element={<MenuPage />} />
 
-          {/* 나만의 카레 시뮬레이터 */}
-          <Route path="/simulator" element={<CurrySimulator />} />
+        {/* 나만의 카레 시뮬레이터 */}
+        <Route path="/simulator" element={<CurrySimulator />} />
 
-          {/* 매장 찾기 */}
-          <Route path="/store" element={<StorePage />} />
+        {/* 매장 찾기 */}
+        <Route path="/store" element={<StorePage />} />
 
-          {/* 브랜드 소개 */}
-          <Route path="/brand" element={<BrandPage />} />
+        {/* 브랜드 소개 */}
+        <Route path="/brand" element={<BrandPage />} />
 
-          {/* 창업 안내 */}
-          <Route path="/franchise" element={<FranchisePage />} />
+        {/* 창업 안내 */}
+        <Route path="/franchise" element={<FranchisePage />} />
 
-          {/* 공지사항 */}
-          <Route path="/notice" element={<NoticePage />} />
+        {/* 공지사항 */}
+        <Route path="/notice" element={<NoticePage />} />
 
-          {/* FAQ */}
-          <Route path="/faq" element={<FAQPage />} />
+        {/* FAQ */}
+        <Route path="/faq" element={<FAQPage />} />
 
-          {/* 관리자 페이지 */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/notice" element={<AdminNoticePage />} />
-          <Route path="/admin/store" element={<AdminStorePage />} />
-          <Route path="/admin/menu" element={<AdminMenuPage />} />
-        </Routes>
+        {/* 관리자 페이지 */}
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/notice" element={<AdminNoticePage />} />
+        <Route path="/admin/store" element={<AdminStorePage />} />
+        <Route path="/admin/menu" element={<AdminMenuPage />} />
+        <Route path="/admin/consultation" element={<AdminConsultationPage />} />
+        <Route path="/admin/hero-visual" element={<AdminHeroVisualPage />} />
+      </Routes>
 
       {/* 푸터: 관리자 페이지 제외 */}
       {!isAdminPage && <Footer />}

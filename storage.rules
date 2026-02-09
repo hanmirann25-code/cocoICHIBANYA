@@ -1,0 +1,24 @@
+rules_version = '2';
+
+// Firebase Storage 보안 규칙
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // hero_visuals 폴더: 모든 사용자가 읽기 가능, 인증된 사용자만 쓰기 가능
+    match /hero_visuals/{allPaths=**} {
+      // 개발 중에는 모든 사용자가 읽기/쓰기 가능하도록 설정
+      // 프로덕션에서는 아래 주석을 해제하고 인증 추가
+      allow read: if true;
+      allow write: if true;
+      
+      // 프로덕션용 (인증 필요):
+      // allow read: if true;
+      // allow write: if request.auth != null;
+    }
+    
+    // 기본적으로 다른 모든 경로는 거부
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

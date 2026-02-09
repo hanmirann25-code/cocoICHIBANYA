@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaUtensils, FaPlus, FaEdit, FaTrash, FaSave, FaTimes, FaArrowLeft, FaImage, FaFire, FaDollarSign } from 'react-icons/fa';
 import menuService, { initializeMenus } from '../services/menuService';
+import { getImagePath } from '../utils/imagePath';
 import * as S from '../styles/AdminStyles';
 
 const AdminMenuPage = () => {
@@ -290,9 +291,9 @@ const AdminMenuPage = () => {
                       <MenuCard key={item.id}>
                         <MenuImageWrapper>
                           <MenuImage 
-                            src={item.image || '/images/menu/default.jpg'} 
+                            src={getImagePath(item.image || '/images/menu/default.jpg')} 
                             alt={item.name}
-                            onError={(e) => e.target.src = '/images/menu/default.jpg'}
+                            onError={(e) => e.target.src = getImagePath('/images/menu/default.jpg')}
                           />
                           {item.popular && <PopularBadge>⭐ 인기</PopularBadge>}
                         </MenuImageWrapper>
@@ -465,9 +466,9 @@ const AdminMenuPage = () => {
                     {formData.image && (
                       <ImagePreview>
                         <PreviewImage 
-                          src={formData.image} 
+                          src={getImagePath(formData.image)} 
                           alt="메뉴 미리보기"
-                          onError={(e) => e.target.src = '/images/menu/default.jpg'}
+                          onError={(e) => e.target.src = getImagePath('/images/menu/default.jpg')}
                         />
                         <PreviewBadge>미리보기</PreviewBadge>
                       </ImagePreview>

@@ -2,160 +2,256 @@
  * ========================================
  * menuService.js - 메뉴 관리 API 서비스
  * ========================================
+ * Firebase Firestore를 사용한 메뉴 관리
  * 카레 메뉴, 토핑, 사이드, 음료 관리
  */
 
-const USE_LOCAL_STORAGE = true;
-const API_BASE_URL = 'https://your-api-server.com/api';
+import { 
+  collection, 
+  getDocs, 
+  getDoc, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  doc,
+  query,
+  orderBy,
+  Timestamp 
+} from 'firebase/firestore';
+import { db } from '../config/firebaseConfig';
+
+const USE_FIREBASE = true;
 const STORAGE_KEY_CURRY = 'cocoichibanya_curry_menus';
 const STORAGE_KEY_TOPPING = 'cocoichibanya_toppings';
 const STORAGE_KEY_SIDE = 'cocoichibanya_sides';
 const STORAGE_KEY_DRINK = 'cocoichibanya_drinks';
 
 // ========================================
-// LocalStorage 구현
+// Firebase Firestore 구현
 // ========================================
-class LocalStorageMenuService {
+class FirebaseMenuService {
   // === 카레 메뉴 ===
   async getAllCurryMenus() {
-    const menus = localStorage.getItem(STORAGE_KEY_CURRY);
-    const parsed = menus ? JSON.parse(menus) : [];
-    // displayOrder로 정렬 (없으면 맨 뒤로)
-    return parsed.sort((a, b) => {
-      const orderA = a.displayOrder ?? 9999;
-      const orderB = b.displayOrder ?? 9999;
-      return orderA - orderB;
-    });
+    return this._getCollection('curry_menus');
   }
 
   async createCurryMenu(menu) {
-    const menus = await this.getAllCurryMenus();
-    const newMenu = {
-      ...menu,
-      id: `curry-${Date.now()}`,
-      createdAt: new Date().toISOString()
-    };
-    menus.push(newMenu);
-    localStorage.setItem(STORAGE_KEY_CURRY, JSON.stringify(menus));
-    return newMenu;
+    return this._createDocument('curry_menus', menu);
   }
 
   async updateCurryMenu(id, updatedData) {
-    const menus = await this.getAllCurryMenus();
-    const index = menus.findIndex(m => m.id === id);
-    if (index === -1) throw new Error('메뉴를 찾을 수 없습니다.');
-    
-    menus[index] = {
-      ...menus[index],
-      ...updatedData,
-      updatedAt: new Date().toISOString()
-    };
-    localStorage.setItem(STORAGE_KEY_CURRY, JSON.stringify(menus));
-    return menus[index];
+    return this._updateDocument('curry_menus', id, updatedData);
   }
 
   async deleteCurryMenu(id) {
-    const menus = await this.getAllCurryMenus();
-    const filtered = menus.filter(m => m.id !== id);
-    localStorage.setItem(STORAGE_KEY_CURRY, JSON.stringify(filtered));
-    return { success: true };
+    return this._deleteDocument('curry_menus', id);
   }
 
   // === 토핑 ===
   async getAllToppings() {
-    const toppings = localStorage.getItem(STORAGE_KEY_TOPPING);
-    const parsed = toppings ? JSON.parse(toppings) : [];
-    // displayOrder로 정렬 (없으면 맨 뒤로)
-    return parsed.sort((a, b) => {
-      const orderA = a.displayOrder ?? 9999;
-      const orderB = b.displayOrder ?? 9999;
-      return orderA - orderB;
-    });
+    return this._getCollection('toppings');
   }
 
   async createTopping(topping) {
-    const toppings = await this.getAllToppings();
-    const newTopping = {
-      ...topping,
-      id: `topping-${Date.now()}`,
-      createdAt: new Date().toISOString()
-    };
-    toppings.push(newTopping);
-    localStorage.setItem(STORAGE_KEY_TOPPING, JSON.stringify(toppings));
-    return newTopping;
+    return this._createDocument('toppings', topping);
   }
 
   async updateTopping(id, updatedData) {
-    const toppings = await this.getAllToppings();
-    const index = toppings.findIndex(t => t.id === id);
-    if (index === -1) throw new Error('토핑을 찾을 수 없습니다.');
-    
-    toppings[index] = {
-      ...toppings[index],
-      ...updatedData,
-      updatedAt: new Date().toISOString()
-    };
-    localStorage.setItem(STORAGE_KEY_TOPPING, JSON.stringify(toppings));
-    return toppings[index];
+    return this._updateDocument('toppings', id, updatedData);
   }
 
   async deleteTopping(id) {
-    const toppings = await this.getAllToppings();
-    const filtered = toppings.filter(t => t.id !== id);
-    localStorage.setItem(STORAGE_KEY_TOPPING, JSON.stringify(filtered));
-    return { success: true };
+    return this._deleteDocument('toppings', id);
   }
 
-  // === 사이드 메뉴 ===
+  // === 사이드 ===
   async getAllSides() {
-    const sides = localStorage.getItem(STORAGE_KEY_SIDE);
-    const parsed = sides ? JSON.parse(sides) : [];
-    // displayOrder로 정렬 (없으면 맨 뒤로)
-    return parsed.sort((a, b) => {
-      const orderA = a.displayOrder ?? 9999;
-      const orderB = b.displayOrder ?? 9999;
-      return orderA - orderB;
-    });
+    return this._getCollection('sides');
   }
 
   async createSide(side) {
-    const sides = await this.getAllSides();
-    const newSide = {
-      ...side,
-      id: `side-${Date.now()}`,
-      createdAt: new Date().toISOString()
-    };
-    sides.push(newSide);
-    localStorage.setItem(STORAGE_KEY_SIDE, JSON.stringify(sides));
-    return newSide;
+    return this._createDocument('sides', side);
   }
 
   async updateSide(id, updatedData) {
-    const sides = await this.getAllSides();
-    const index = sides.findIndex(s => s.id === id);
-    if (index === -1) throw new Error('사이드를 찾을 수 없습니다.');
-    
-    sides[index] = {
-      ...sides[index],
-      ...updatedData,
-      updatedAt: new Date().toISOString()
-    };
-    localStorage.setItem(STORAGE_KEY_SIDE, JSON.stringify(sides));
-    return sides[index];
+    return this._updateDocument('sides', id, updatedData);
   }
 
   async deleteSide(id) {
-    const sides = await this.getAllSides();
-    const filtered = sides.filter(s => s.id !== id);
-    localStorage.setItem(STORAGE_KEY_SIDE, JSON.stringify(filtered));
-    return { success: true };
+    return this._deleteDocument('sides', id);
   }
 
   // === 음료 ===
   async getAllDrinks() {
-    const drinks = localStorage.getItem(STORAGE_KEY_DRINK);
-    const parsed = drinks ? JSON.parse(drinks) : [];
-    // displayOrder로 정렬 (없으면 맨 뒤로)
+    return this._getCollection('drinks');
+  }
+
+  async createDrink(drink) {
+    return this._createDocument('drinks', drink);
+  }
+
+  async updateDrink(id, updatedData) {
+    return this._updateDocument('drinks', id, updatedData);
+  }
+
+  async deleteDrink(id) {
+    return this._deleteDocument('drinks', id);
+  }
+
+  // === 공통 메서드 ===
+  async _getCollection(collectionName) {
+    try {
+      const q = query(
+        collection(db, collectionName),
+        orderBy('displayOrder', 'asc')
+      );
+      const querySnapshot = await getDocs(q);
+      
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate?.()?.toISOString(),
+        updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString()
+      }));
+    } catch (error) {
+      console.error(`${collectionName} 불러오기 실패:`, error);
+      throw error;
+    }
+  }
+
+  async _createDocument(collectionName, data) {
+    try {
+      const newData = {
+        ...data,
+        displayOrder: data.displayOrder ?? 0,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
+      };
+      
+      const docRef = await addDoc(collection(db, collectionName), newData);
+      
+      return {
+        id: docRef.id,
+        ...newData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error(`${collectionName} 생성 실패:`, error);
+      throw error;
+    }
+  }
+
+  async _updateDocument(collectionName, id, updatedData) {
+    try {
+      const docRef = doc(db, collectionName, id);
+      const updateData = {
+        ...updatedData,
+        updatedAt: Timestamp.now()
+      };
+      
+      await updateDoc(docRef, updateData);
+      
+      const docSnap = await getDoc(docRef);
+      return {
+        id: docSnap.id,
+        ...docSnap.data(),
+        createdAt: docSnap.data().createdAt?.toDate?.()?.toISOString(),
+        updatedAt: docSnap.data().updatedAt?.toDate?.()?.toISOString()
+      };
+    } catch (error) {
+      console.error(`${collectionName} 수정 실패:`, error);
+      throw error;
+    }
+  }
+
+  async _deleteDocument(collectionName, id) {
+    try {
+      await deleteDoc(doc(db, collectionName, id));
+      return { success: true };
+    } catch (error) {
+      console.error(`${collectionName} 삭제 실패:`, error);
+      throw error;
+    }
+  }
+}
+
+// ========================================
+// LocalStorage 구현 (백업용)
+// ========================================
+class LocalStorageMenuService {
+  // === 카레 메뉴 ===
+  async getAllCurryMenus() {
+    return this._getFromStorage(STORAGE_KEY_CURRY);
+  }
+
+  async createCurryMenu(menu) {
+    return this._createInStorage(STORAGE_KEY_CURRY, menu, 'curry');
+  }
+
+  async updateCurryMenu(id, updatedData) {
+    return this._updateInStorage(STORAGE_KEY_CURRY, id, updatedData);
+  }
+
+  async deleteCurryMenu(id) {
+    return this._deleteFromStorage(STORAGE_KEY_CURRY, id);
+  }
+
+  // === 토핑 ===
+  async getAllToppings() {
+    return this._getFromStorage(STORAGE_KEY_TOPPING);
+  }
+
+  async createTopping(topping) {
+    return this._createInStorage(STORAGE_KEY_TOPPING, topping, 'topping');
+  }
+
+  async updateTopping(id, updatedData) {
+    return this._updateInStorage(STORAGE_KEY_TOPPING, id, updatedData);
+  }
+
+  async deleteTopping(id) {
+    return this._deleteFromStorage(STORAGE_KEY_TOPPING, id);
+  }
+
+  // === 사이드 ===
+  async getAllSides() {
+    return this._getFromStorage(STORAGE_KEY_SIDE);
+  }
+
+  async createSide(side) {
+    return this._createInStorage(STORAGE_KEY_SIDE, side, 'side');
+  }
+
+  async updateSide(id, updatedData) {
+    return this._updateInStorage(STORAGE_KEY_SIDE, id, updatedData);
+  }
+
+  async deleteSide(id) {
+    return this._deleteFromStorage(STORAGE_KEY_SIDE, id);
+  }
+
+  // === 음료 ===
+  async getAllDrinks() {
+    return this._getFromStorage(STORAGE_KEY_DRINK);
+  }
+
+  async createDrink(drink) {
+    return this._createInStorage(STORAGE_KEY_DRINK, drink, 'drink');
+  }
+
+  async updateDrink(id, updatedData) {
+    return this._updateInStorage(STORAGE_KEY_DRINK, id, updatedData);
+  }
+
+  async deleteDrink(id) {
+    return this._deleteFromStorage(STORAGE_KEY_DRINK, id);
+  }
+
+  // === 공통 메서드 ===
+  _getFromStorage(key) {
+    const items = localStorage.getItem(key);
+    const parsed = items ? JSON.parse(items) : [];
     return parsed.sort((a, b) => {
       const orderA = a.displayOrder ?? 9999;
       const orderB = b.displayOrder ?? 9999;
@@ -163,209 +259,165 @@ class LocalStorageMenuService {
     });
   }
 
-  async createDrink(drink) {
-    const drinks = await this.getAllDrinks();
-    const newDrink = {
-      ...drink,
-      id: `drink-${Date.now()}`,
+  _createInStorage(key, data, prefix) {
+    const items = this._getFromStorage(key);
+    const newItem = {
+      ...data,
+      id: `${prefix}-${Date.now()}`,
       createdAt: new Date().toISOString()
     };
-    drinks.push(newDrink);
-    localStorage.setItem(STORAGE_KEY_DRINK, JSON.stringify(drinks));
-    return newDrink;
+    items.push(newItem);
+    localStorage.setItem(key, JSON.stringify(items));
+    return newItem;
   }
 
-  async updateDrink(id, updatedData) {
-    const drinks = await this.getAllDrinks();
-    const index = drinks.findIndex(d => d.id === id);
-    if (index === -1) throw new Error('음료를 찾을 수 없습니다.');
+  _updateInStorage(key, id, updatedData) {
+    const items = this._getFromStorage(key);
+    const index = items.findIndex(item => item.id === id);
+    if (index === -1) throw new Error('항목을 찾을 수 없습니다.');
     
-    drinks[index] = {
-      ...drinks[index],
+    items[index] = {
+      ...items[index],
       ...updatedData,
       updatedAt: new Date().toISOString()
     };
-    localStorage.setItem(STORAGE_KEY_DRINK, JSON.stringify(drinks));
-    return drinks[index];
+    localStorage.setItem(key, JSON.stringify(items));
+    return items[index];
   }
 
-  async deleteDrink(id) {
-    const drinks = await this.getAllDrinks();
-    const filtered = drinks.filter(d => d.id !== id);
-    localStorage.setItem(STORAGE_KEY_DRINK, JSON.stringify(filtered));
+  _deleteFromStorage(key, id) {
+    const items = this._getFromStorage(key);
+    const filtered = items.filter(item => item.id !== id);
+    localStorage.setItem(key, JSON.stringify(filtered));
     return { success: true };
   }
 }
 
 // ========================================
-// 실서버 API 구현
+// Export
 // ========================================
-class APIMenuService {
-  async getAllCurryMenus() {
-    const response = await fetch(`${API_BASE_URL}/menus/curry`);
-    if (!response.ok) throw new Error('메뉴를 불러올 수 없습니다.');
-    return await response.json();
-  }
-
-  async createCurryMenu(menu) {
-    const response = await fetch(`${API_BASE_URL}/menus/curry`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(menu)
-    });
-    if (!response.ok) throw new Error('메뉴를 생성할 수 없습니다.');
-    return await response.json();
-  }
-
-  async updateCurryMenu(id, updatedData) {
-    const response = await fetch(`${API_BASE_URL}/menus/curry/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedData)
-    });
-    if (!response.ok) throw new Error('메뉴를 수정할 수 없습니다.');
-    return await response.json();
-  }
-
-  async deleteCurryMenu(id) {
-    const response = await fetch(`${API_BASE_URL}/menus/curry/${id}`, {
-      method: 'DELETE'
-    });
-    if (!response.ok) throw new Error('메뉴를 삭제할 수 없습니다.');
-    return await response.json();
-  }
-
-  // 토핑, 사이드, 음료도 동일한 패턴으로 구현
-  async getAllToppings() {
-    const response = await fetch(`${API_BASE_URL}/menus/toppings`);
-    if (!response.ok) throw new Error('토핑을 불러올 수 없습니다.');
-    return await response.json();
-  }
-
-  async getAllSides() {
-    const response = await fetch(`${API_BASE_URL}/menus/sides`);
-    if (!response.ok) throw new Error('사이드를 불러올 수 없습니다.');
-    return await response.json();
-  }
-
-  async getAllDrinks() {
-    const response = await fetch(`${API_BASE_URL}/menus/drinks`);
-    if (!response.ok) throw new Error('음료를 불러올 수 없습니다.');
-    return await response.json();
-  }
-}
-
-const menuService = USE_LOCAL_STORAGE 
-  ? new LocalStorageMenuService() 
-  : new APIMenuService();
+const menuService = USE_FIREBASE 
+  ? new FirebaseMenuService() 
+  : new LocalStorageMenuService();
 
 export default menuService;
 
+// ========================================
 // 초기 데이터 설정
+// ========================================
 export const initializeMenus = async () => {
-  if (!USE_LOCAL_STORAGE) return;
-  
-  const existingCurry = await menuService.getAllCurryMenus();
-  if (existingCurry.length === 0) {
-    const initialCurryMenus = [
-      {
-        id: 'pork-cutlet',
-        name: '로스카츠 카레',
-        category: 'pork',
-        price: 7800,
-        description: '코코이찌방야의 대표 메뉴! 바삭한 로스카츠와 진한 카레의 환상 조합',
-        image: '/images/menu/pork-cutlet.jpg',
-        popular: true,
-        allergens: ['돼지고기', '밀', '대두'],
-        calories: 850,
-        spicy: 0
-      },
-      {
-        id: 'chicken-cutlet',
-        name: '치킨카츠 카레',
-        category: 'chicken',
-        price: 7500,
-        description: '부드러운 치킨카츠와 코코이찌방야 특제 카레',
-        image: '/images/menu/chicken-cutlet.jpg',
-        popular: true,
-        allergens: ['닭고기', '밀', '대두'],
-        calories: 780,
-        spicy: 0
-      }
-    ];
-    localStorage.setItem(STORAGE_KEY_CURRY, JSON.stringify(initialCurryMenus));
-  }
+  try {
+    // 카레 메뉴 초기화
+    const curryMenus = await menuService.getAllCurryMenus();
+    if (curryMenus.length === 0) {
+      console.log('🍛 카레 메뉴 초기 데이터 생성 중...');
+      const initialCurryMenus = [
+        {
+          name: '포크 커리',
+          category: 'pork',
+          price: 7500,
+          description: '부드러운 돼지고기가 들어간 클래식 커리',
+          image: '/images/menu/pork-curry.jpg',
+          popular: true,
+          allergens: ['돼지고기', '밀', '대두'],
+          calories: 650,
+          spicy: 2,
+          displayOrder: 1
+        },
+        {
+          name: '치킨 커리',
+          category: 'chicken',
+          price: 7500,
+          description: '담백한 닭고기가 들어간 커리',
+          image: '/images/menu/chicken-curry.jpg',
+          popular: false,
+          allergens: ['닭고기', '밀', '대두'],
+          calories: 620,
+          spicy: 2,
+          displayOrder: 2
+        }
+      ];
 
-  const existingToppings = await menuService.getAllToppings();
-  if (existingToppings.length === 0) {
-    const initialToppings = [
-      {
-        id: 'cheese',
-        name: '치즈',
-        price: 1000,
-        category: 'dairy',
-        image: '/images/toppings/cheese.jpg',
-        description: '고소한 체다치즈',
-        allergens: ['우유']
-      },
-      {
-        id: 'egg',
-        name: '계란후라이',
-        price: 800,
-        category: 'protein',
-        image: '/images/toppings/egg.jpg',
-        description: '반숙 계란후라이',
-        allergens: ['계란']
+      for (const menu of initialCurryMenus) {
+        await menuService.createCurryMenu(menu);
       }
-    ];
-    localStorage.setItem(STORAGE_KEY_TOPPING, JSON.stringify(initialToppings));
-  }
+      console.log('✅ 카레 메뉴 초기 데이터 생성 완료!');
+    }
 
-  const existingSides = await menuService.getAllSides();
-  if (existingSides.length === 0) {
-    const initialSides = [
-      {
-        id: 'salad',
-        name: '코울슬로 샐러드',
-        category: 'salad',
-        price: 2500,
-        description: '상큼한 양배추 샐러드',
-        image: '/images/sides/salad.jpg',
-        calories: 150
-      },
-      {
-        id: 'soup',
-        name: '미소시루',
-        category: 'soup',
-        price: 1500,
-        description: '따뜻한 된장국',
-        image: '/images/sides/soup.jpg',
-        calories: 50
-      }
-    ];
-    localStorage.setItem(STORAGE_KEY_SIDE, JSON.stringify(initialSides));
-  }
+    // 토핑 초기화
+    const toppings = await menuService.getAllToppings();
+    if (toppings.length === 0) {
+      console.log('🧀 토핑 초기 데이터 생성 중...');
+      const initialToppings = [
+        {
+          name: '치즈',
+          category: 'dairy',
+          price: 1500,
+          description: '고소한 치즈 토핑',
+          image: '/images/toppings/cheese.jpg',
+          allergens: ['우유'],
+          displayOrder: 1
+        },
+        {
+          name: '로스카츠',
+          category: 'protein',
+          price: 3000,
+          description: '바삭한 돈까스 토핑',
+          image: '/images/toppings/katsu.jpg',
+          allergens: ['돼지고기', '밀'],
+          displayOrder: 2
+        }
+      ];
 
-  const existingDrinks = await menuService.getAllDrinks();
-  if (existingDrinks.length === 0) {
-    const initialDrinks = [
-      {
-        id: 'cola',
-        name: '콜라',
-        category: 'soft',
-        price: 2000,
-        description: '시원한 코카콜라',
-        image: '/images/drinks/cola.jpg'
-      },
-      {
-        id: 'orange-juice',
-        name: '오렌지주스',
-        category: 'juice',
-        price: 2500,
-        description: '생과일 오렌지주스',
-        image: '/images/drinks/orange.jpg'
+      for (const topping of initialToppings) {
+        await menuService.createTopping(topping);
       }
-    ];
-    localStorage.setItem(STORAGE_KEY_DRINK, JSON.stringify(initialDrinks));
+      console.log('✅ 토핑 초기 데이터 생성 완료!');
+    }
+
+    // 사이드 초기화
+    const sides = await menuService.getAllSides();
+    if (sides.length === 0) {
+      console.log('🥗 사이드 초기 데이터 생성 중...');
+      const initialSides = [
+        {
+          name: '샐러드',
+          category: 'salad',
+          price: 2500,
+          description: '신선한 야채 샐러드',
+          image: '/images/sides/salad.jpg',
+          calories: 120,
+          displayOrder: 1
+        }
+      ];
+
+      for (const side of initialSides) {
+        await menuService.createSide(side);
+      }
+      console.log('✅ 사이드 초기 데이터 생성 완료!');
+    }
+
+    // 음료 초기화
+    const drinks = await menuService.getAllDrinks();
+    if (drinks.length === 0) {
+      console.log('🥤 음료 초기 데이터 생성 중...');
+      const initialDrinks = [
+        {
+          name: '콜라',
+          category: 'soft',
+          price: 2000,
+          description: '시원한 콜라',
+          image: '/images/drinks/cola.jpg',
+          displayOrder: 1
+        }
+      ];
+
+      for (const drink of initialDrinks) {
+        await menuService.createDrink(drink);
+      }
+      console.log('✅ 음료 초기 데이터 생성 완료!');
+    }
+  } catch (error) {
+    console.error('메뉴 초기화 실패:', error);
   }
 };

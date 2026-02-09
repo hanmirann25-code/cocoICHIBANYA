@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaStore, FaPlus, FaEdit, FaTrash, FaSave, FaTimes, FaArrowLeft, FaMapMarkerAlt, FaPhone, FaClock, FaImage } from 'react-icons/fa';
 import storeService, { initializeStores } from '../services/storeService';
+import { getImagePath } from '../utils/imagePath';
 import * as S from '../styles/AdminStyles';
 
 const AdminStorePage = () => {
@@ -200,9 +201,9 @@ const AdminStorePage = () => {
                       <StoreCard key={store.id}>
                         <StoreImageWrapper>
                           <StoreImage 
-                            src={store.images?.[0] || '/images/stores/default.jpg'} 
+                            src={getImagePath(store.images?.[0] || '/images/stores/default.jpg')} 
                             alt={store.name}
-                            onError={(e) => e.target.src = '/images/stores/default.jpg'}
+                            onError={(e) => e.target.src = getImagePath('/images/stores/default.jpg')}
                           />
                         </StoreImageWrapper>
                         
@@ -374,7 +375,7 @@ const AdminStorePage = () => {
                     {formData.images?.[0] && (
                       <ImagePreview>
                         <PreviewImage 
-                          src={formData.images[0]} 
+                          src={getImagePath(formData.images[0])} 
                           alt="매장 미리보기"
                           onError={(e) => e.target.src = '/images/stores/default.jpg'}
                         />

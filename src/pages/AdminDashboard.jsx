@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaLock, FaBell, FaStore, FaUtensils, FaSignOutAlt, FaChartBar } from 'react-icons/fa';
+import { FaLock, FaBell, FaStore, FaUtensils, FaSignOutAlt, FaChartBar, FaComments, FaImage } from 'react-icons/fa';
 
 const ADMIN_PASSWORD = 'coco2026';
 
@@ -65,6 +65,22 @@ const AdminDashboard = () => {
       icon: <FaUtensils />,
       path: '/admin/menu',
       color: '#ef4444'
+    },
+    {
+      id: 'consultation',
+      title: '창업 상담 관리',
+      description: '창업 상담 신청 조회 및 관리',
+      icon: <FaComments />,
+      path: '/admin/consultation',
+      color: '#10b981'
+    },
+    {
+      id: 'hero-visual',
+      title: '메인 비주얼 관리',
+      description: '메인 페이지 히어로 이미지/비디오 관리',
+      icon: <FaImage />,
+      path: '/admin/hero-visual',
+      color: '#8b5cf6'
     }
   ];
 
@@ -170,8 +186,8 @@ const AdminDashboard = () => {
             <StorageInfo>
               <StorageTitle>⚙️ 데이터 저장 방식</StorageTitle>
               <StorageText>
-                현재 <strong>LocalStorage</strong>를 사용 중입니다. 
-                실서버 배포 시에는 각 서비스 파일 (noticeService.js, storeService.js, menuService.js)에서 
+                현재 <strong>LocalStorage</strong>를 사용 중입니다.
+                실서버 배포 시에는 각 서비스 파일 (noticeService.js, storeService.js, menuService.js)에서
                 2줄만 수정하면 API로 전환됩니다.
               </StorageText>
             </StorageInfo>

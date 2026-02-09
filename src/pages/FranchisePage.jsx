@@ -20,6 +20,8 @@ import {
 } from 'react-icons/fa';
 import Button from '../components/common/Button';
 import SEO from '../components/common/SEO';
+import { getImagePath } from '../utils/imagePath';
+import consultationService from '../services/consultationService';
 
 const FranchisePage = () => {
   const [activeTab, setActiveTab] = useState('process');
@@ -123,16 +125,33 @@ const FranchisePage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('상담 신청이 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.');
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      location: '',
-      message: ''
-    });
+    
+    // 필수 항목 검증
+    if (!formData.name || !formData.phone) {
+      alert('이름과 연락처는 필수 입력 항목입니다.');
+      return;
+    }
+    
+    try {
+      // Firebase에 상담 신청 저장
+      await consultationService.createConsultation(formData);
+      
+      alert('상담 신청이 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.');
+      
+      // 폼 초기화
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        location: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error('상담 신청 실패:', error);
+      alert('상담 신청 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
   };
 
   return (
@@ -413,7 +432,7 @@ const FranchisePageWrapper = styled.div`
 const HeroSection = styled.section`
   position: relative;
   height: 400px;
-  background: url('/images/franchise-hero.jpg') center/cover;
+  background: url('${getImagePath('/images/franchise-hero.jpg')}') center/cover;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaFire, FaCheckCircle, FaShoppingCart, FaRedo } from 'react-icons/fa';
 import Button from '../components/common/Button';
 import SEO from '../components/common/SEO';
+import { getImagePath } from '../utils/imagePath';
 import { 
   curryMenus, 
   spicyLevels, 
@@ -139,7 +140,7 @@ const CurrySimulator = () => {
                           $selected={selectedBase?.id === menu.id}
                           onClick={() => setSelectedBase(menu)}
                         >
-                          <BaseImage src={menu.image} alt={menu.name} />
+                          <BaseImage src={getImagePath(menu.image)} alt={menu.name} />
                           <BaseName>{menu.name}</BaseName>
                           <BasePrice>{menu.price.toLocaleString()}원</BasePrice>
                           {selectedBase?.id === menu.id && (
@@ -310,7 +311,7 @@ const CurrySimulator = () => {
                           $selected={selectedToppings.includes(topping.id)}
                           onClick={() => toggleTopping(topping.id)}
                         >
-                          <ToppingImage src={topping.image} alt={topping.name} />
+                          <ToppingImage src={getImagePath(topping.image)} alt={topping.name} />
                           <ToppingInfo>
                             <ToppingName>{topping.name}</ToppingName>
                             <ToppingPrice>+{topping.price.toLocaleString()}원</ToppingPrice>
@@ -401,7 +402,7 @@ const CurrySimulator = () => {
               <PreviewCard>
                 <PreviewTitle>미리보기</PreviewTitle>
                 {selectedBase && (
-                  <PreviewImage src={selectedBase.image} alt="preview" />
+                  <PreviewImage src={getImagePath(selectedBase.image)} alt="preview" />
                 )}
                 <PreviewDetails>
                   <DetailItem>

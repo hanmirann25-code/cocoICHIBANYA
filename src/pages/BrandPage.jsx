@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaAward, FaLeaf, FaHeart, FaGlobeAsia, FaCheckCircle } from 'react-icons/fa';
 import SEO from '../components/common/SEO';
+import { getImagePath } from '../utils/imagePath';
 
 const BrandPage = () => {
   const values = [
@@ -116,7 +117,7 @@ const BrandPage = () => {
         <Container>
           <StoryGrid>
             <StoryImage>
-              <img src="/images/brand-story.jpg" alt="코코이찌방야 스토리" />
+              <img src={getImagePath('/images/brand-story.jpg')} alt="코코이찌방야 스토리" />
             </StoryImage>
             <StoryContent
               as={motion.div}
@@ -175,7 +176,7 @@ const BrandPage = () => {
         <Container>
           <FeaturesGrid>
             <FeaturesImage>
-              <img src="/images/curry-making.jpg" alt="카레 제조" />
+              <img src={getImagePath('/images/curry-making.jpg')} alt="카레 제조" />
             </FeaturesImage>
             <FeaturesContent>
               <FeaturesTitle>코코이찌방야만의 특별함</FeaturesTitle>
@@ -229,7 +230,7 @@ const BrandPageWrapper = styled.div`
 const HeroSection = styled.section`
   position: relative;
   height: 500px;
-  background: url('/images/brand-hero.jpg') center/cover;
+  background: url('${getImagePath('/images/brand-hero.jpg')}') center/cover;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -490,7 +491,7 @@ const FeatureItem = styled.div`
 const CTASection = styled.section`
   position: relative;
   padding: 6rem 0;
-  background: url('/images/cta-bg.jpg') center/cover;
+  background: url('${getImagePath('/images/cta-bg.jpg')}') center/cover;
   text-align: center;
   color: var(--color-white);
 `;
